@@ -1,0 +1,454 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
+#include <math.h>
+#include <time.h>
+
+#define TAILLE 19
+#define TUNITY 35
+#define CASEVAL 4
+#define NBJOUEURS 2
+#define PI 3.14159265
+#define DEPLACEMENTS {{0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}}
+
+
+
+void pvp();
+void ecrire_etat_initial(FILE* fichier,int coords_joueurs[NBJOUEURS][2], int carte[TAILLE][TAILLE]);
+void remplir_carte_init(int carte[TAILLE][TAILLE]);
+void positionner_joueurs(int coords_joueurs[NBJOUEURS][2]);
+void raffraichir_copie(int copie[TAILLE][TAILLE + NBJOUEURS], int carte[TAILLE][TAILLE], int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur);
+
+// enleve un certain nombre de point à une case
+void reduc_case(int coordcase1, int coordcase2, int carte[TAILLE][TAILLE], int reduc, FILE* fichier);
+void afficher_carte(int carte[TAILLE][TAILLE], int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS]);
+int deplacement_correct(int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur, int direction, int carte[TAILLE][TAILLE]);
+
+// huit mouvement possible par rapport a une coordonnée et enleve un point sur la case dans laquelle on arrive
+void mouvement_j(int coord_joueur[2], int direction, int carte [TAILLE][TAILLE]);
+
+// place la grenade à 5 cases de la position du tireur sauf si l'autre joueur est sur la trajectoire de la grenade
+void grenade(int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur, int direction, int carte[TAILLE][TAILLE], FILE* fichier);
+int pas_sur_un_joueur(int coord1, int coord2, int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS]);
+
+// fait exploser la case sur laquelle tombe la grenade et divise par deux la valeur des quatre cases directement autour
+void explo_grenade(int coordcase1, int coordcase2, int carte[TAILLE][TAILLE], FILE* fichier);
+int test_marteau(int coords_joueur[2], int direction, int carte[TAILLE][TAILLE]);
+
+// coup de marteau sur une des huit cases autour du joueur
+void marteau(int coord_joueur[2], int carte[TAILLE][TAILLE], int direction, FILE* fichier);
+int dans_la_carte(int coord1, int coord2);
+int ia(int joueur, int copie[TAILLE][TAILLE + NBJOUEURS], int nb_lignes, int nb_collones);
+void Color(int t,int f);
+
+
+
+
+void main()
+{
+    srand(time(NULL));
+    pvp();
+}
+
+
+void pvp()
+{
+    int i, j;
+    int coords_joueurs[NBJOUEURS][2];
+    positionner_joueurs(coords_joueurs);
+    int joueurs_vivants[NBJOUEURS];
+    for (i = 0; i < NBJOUEURS; i++)
+    {
+        joueurs_vivants[i] = 1;
+    }
+    int nb_joueurs_vivants = NBJOUEURS;
+    int carte[TAILLE][TAILLE];
+    remplir_carte_init(carte);
+    int copie[TAILLE][TAILLE + NBJOUEURS];
+    int joueur_actuel = rand() % NBJOUEURS;
+    FILE* fichier = NULL;
+    fichier = fopen("actions.txt", "w");
+    ecrire_etat_initial(fichier, coords_joueurs, carte);
+    while (nb_joueurs_vivants > 1)
+    {
+        if (joueurs_vivants[joueur_actuel])
+        {
+            fprintf(fichier, "%d\n", joueur_actuel+1);
+            raffraichir_copie(copie, carte, coords_joueurs, joueurs_vivants, joueur_actuel);
+            int choix = ia(joueur_actuel, copie, TAILLE, TAILLE + NBJOUEURS);
+            printf("%d\n", choix);
+            int choix1 = choix / 8;
+            int choix2 = choix % 8;
+            if (choix1 < 4)
+            {
+                grenade(coords_joueurs, joueurs_vivants, joueur_actuel, choix1, carte, fichier);
+                reduc_case(coords_joueurs[joueur_actuel][0], coords_joueurs[joueur_actuel][1], carte, 1, fichier);
+            } else
+            {
+                choix1 -= 4;
+                if (deplacement_correct(coords_joueurs, joueurs_vivants, joueur_actuel, choix1, carte))
+                {
+                    fprintf(fichier, "6,%d\n1\n", choix1+1);
+                    reduc_case(coords_joueurs[joueur_actuel][0], coords_joueurs[joueur_actuel][1], carte, 1, fichier);
+                    mouvement_j(coords_joueurs[joueur_actuel], choix1, carte);
+                } else
+                {
+                    fprintf(fichier, "0,0\n1\n3,%d,0\n", TUNITY + joueur_actuel);
+                    joueurs_vivants[joueur_actuel] = 0;
+                    nb_joueurs_vivants--;
+                }
+            }
+            if (joueurs_vivants[joueur_actuel])
+            {
+                if (!carte[coords_joueurs[joueur_actuel][0]][coords_joueurs[joueur_actuel][1]])
+                {
+                    fprintf(fichier, "0\n%d\n3,%d,0\n", nb_joueurs_vivants, TUNITY + joueur_actuel);
+                    joueurs_vivants[joueur_actuel] = 0;
+                    nb_joueurs_vivants--;
+                } else
+                {
+                    int test = test_marteau(coords_joueurs[joueur_actuel], choix2, carte);
+                    if (test)
+                    {
+                        if (test-1)
+                        {
+                            fprintf(fichier, "%d\n%d\n", choix2+1, nb_joueurs_vivants+1);
+                            marteau(coords_joueurs[joueur_actuel], carte, choix2, fichier);
+                        } else
+                        {
+                            fprintf(fichier, "%d\n%d\n3,%d,0\n", choix2+1, nb_joueurs_vivants, TUNITY + joueur_actuel);
+                            joueurs_vivants[joueur_actuel] = 0;
+                            nb_joueurs_vivants--;
+                        }
+                    } else
+                    {
+                        fprintf(fichier, "0\n%d\n3,%d,0\n", nb_joueurs_vivants, TUNITY + joueur_actuel);
+                        joueurs_vivants[joueur_actuel] = 0;
+                        nb_joueurs_vivants--;
+                    }
+                }
+            } else
+            {
+                fprintf(fichier, "0\n0\n");
+            }
+            for (j = 0; j < NBJOUEURS && nb_joueurs_vivants > 1; j++)
+            {
+                if (joueurs_vivants[j])
+                {
+                    if (!carte[coords_joueurs[j][0]][coords_joueurs[j][1]])
+                    {
+                        fprintf(fichier, "3,%d,0\n", TAILLE + joueur_actuel);
+                        joueurs_vivants[j] = 0;
+                        nb_joueurs_vivants--;
+                    } else
+                    {
+                        fprintf(fichier, "0,0,0\n");
+                    }
+                }
+            }
+            while (j < NBJOUEURS)
+            {
+                fprintf(fichier, "0,0,0\n");
+                j++;
+            }
+            afficher_carte(carte, coords_joueurs, joueurs_vivants);
+        }
+        joueur_actuel = (joueur_actuel + 1) % NBJOUEURS;
+    }
+    for (j = 0; j < NBJOUEURS; j++)
+    {
+        if (joueurs_vivants[j])
+        {
+            fprintf(fichier, "-1\n%d,", j+1);
+        }
+    }
+    fclose(fichier);
+}
+
+
+
+void ecrire_etat_initial(FILE* fichier,int coords_joueurs[NBJOUEURS][2], int carte[TAILLE][TAILLE])
+{
+    int i, j;
+    fprintf(fichier, "%d\n", NBJOUEURS);
+    for (j = 0; j < NBJOUEURS; j++)
+    {
+        fprintf(fichier, "%d,%d\n", coords_joueurs[j][0], coords_joueurs[j][1]);
+    }
+    for (i = 0; i < TAILLE; i++)
+    {
+        for (j = 0; j < TAILLE; j++)
+        {
+            fprintf(fichier, "%d,", carte[i][j]);
+        }
+        for (j = TAILLE; j < TUNITY; j++)
+        {
+            fprintf(fichier, "0,");
+        }
+        fprintf(fichier, "\n");
+    }
+    for (i = TAILLE; i < TUNITY; i++)
+    {
+        for (j = 0; j < TUNITY; j++)
+        {
+            fprintf(fichier, "0,");
+        }
+        fprintf(fichier, "\n");
+    }
+}
+
+
+void remplir_carte_init(int carte[TAILLE][TAILLE])
+{
+	int i, j;
+	for (i = 0; i < TAILLE; i++)
+    {
+        for(j = 0; j < TAILLE; j++)
+        {
+            if (j < i - (2*TAILLE/3) || i < j - (2*TAILLE/3) || j + i < TAILLE/3 || j + i >= (5*TAILLE/3))
+            {
+                carte[i][j] = 0;
+            } else
+            {
+                carte[i][j] = CASEVAL;
+            }
+        }
+    }
+}
+
+
+void positionner_joueurs(int coords_joueurs[NBJOUEURS][2])
+{
+    int i;
+    for (i = 0; i < NBJOUEURS; i++)
+    {
+        coords_joueurs[i][0] = TAILLE/2 + (TAILLE/2 - 2) * sin(2.0 * PI * (double)(i) / (double)(NBJOUEURS));
+        coords_joueurs[i][1] = TAILLE/2 + (TAILLE/2 - 2) * cos(2.0 * PI * (double)(i) / (double)(NBJOUEURS));
+    }
+}
+
+
+void raffraichir_copie(int copie[TAILLE][TAILLE + NBJOUEURS], int carte[TAILLE][TAILLE], int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur)
+{
+    int i, j;
+    for (i = 0; i < TAILLE; i++)
+    {
+        for (j = 0; j < TAILLE; j++)
+        {
+            copie[i][j] = carte[i][j];
+        }
+    }
+    for (i = 0; i < NBJOUEURS; i++)
+    {
+        copie[0][TAILLE + i] = joueurs_vivants[(i+joueur) % NBJOUEURS];
+        copie[1][TAILLE + i] = coords_joueurs[(i+joueur) % NBJOUEURS][0];
+        copie[2][TAILLE + i] = coords_joueurs[(i+joueur) % NBJOUEURS][1];
+        for (j = 3; j < TAILLE; j++)
+        {
+            copie[j][TAILLE + i] = 0;
+        }
+    }
+    return copie;
+}
+
+
+void reduc_case(int coordcase1, int coordcase2, int carte[TAILLE][TAILLE], int reduc, FILE* fichier)
+{
+	carte[coordcase1][coordcase2] -= reduc;
+	if (carte[coordcase1][coordcase2] < 0)
+    {
+        carte[coordcase1][coordcase2] = 0;
+    }
+    fprintf(fichier, "%d,%d,%d\n", coordcase1, coordcase2, carte[coordcase1][coordcase2]);
+}
+
+
+
+void afficher_carte(int carte[TAILLE][TAILLE], int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS])
+{
+    int i, j;
+    for (i = 0; i < TAILLE; i++)
+    {
+        for (j = 0; j < TAILLE; j++)
+        {
+            if (pas_sur_un_joueur(i, j, coords_joueurs, joueurs_vivants))
+            {
+                Color(15, 0);
+            }
+            else
+            {
+                Color(15, 4);
+            }
+            printf("%d ", carte[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n\n");
+}
+
+
+
+int deplacement_correct(int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur, int direction, int carte[TAILLE][TAILLE])
+{
+    int deplacements[7][2] = DEPLACEMENTS;
+    if (direction < 0 || direction > 7)
+    {
+        return 0;
+    }
+    if (dans_la_carte(coords_joueurs[joueur][0] + deplacements[direction][0], coords_joueurs[joueur][1] + deplacements[direction][1]))
+    {
+        return pas_sur_un_joueur(coords_joueurs[joueur][0] + deplacements[direction][0], coords_joueurs[joueur][1] + deplacements[direction][1], coords_joueurs, joueurs_vivants);
+    }
+    return 0;
+}
+
+
+void mouvement_j(int coord_joueur[2], int direction, int carte[TAILLE][TAILLE])
+{
+    int deplacements[7][2] = DEPLACEMENTS;
+	coord_joueur[0] += deplacements[direction][0];
+	coord_joueur[1] += deplacements[direction][1];
+}
+
+
+
+
+void grenade(int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur, int direction, int carte[TAILLE][TAILLE], FILE* fichier)
+{
+    int missile[2];
+    int deplacements[7][2] = DEPLACEMENTS;
+	int i = 1;
+	missile[0] = coords_joueurs[joueur][0] + deplacements[2*direction][0];
+	missile[1] = coords_joueurs[joueur][1] + deplacements[2*direction][1];
+	while (i < 5 && pas_sur_un_joueur(missile[0], missile[1], coords_joueurs, joueurs_vivants) && dans_la_carte(missile[0], missile[1]))
+    {
+        i++;
+        missile[0] += deplacements[2*direction][0];
+        missile[1] += deplacements[2*direction][1];
+    }
+    if (!pas_sur_un_joueur(missile[0], missile[1], coords_joueurs, joueurs_vivants) || !dans_la_carte(missile[0], missile[1]))
+    {
+        i--;
+        missile[0] -= deplacements[2*direction][0];
+        missile[1] -= deplacements[2*direction][1];
+    }
+    fprintf(fichier, "%d,%d\n", i, direction+1);
+    fprintf(fichier, "6\n");
+    explo_grenade(missile[0], missile[1], carte, fichier);
+}
+
+
+int pas_sur_un_joueur(int coord1, int coord2, int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS])
+{
+    int joueur;
+    for (joueur = 0; joueur < NBJOUEURS; joueur++)
+    {
+        if (joueurs_vivants[joueur])
+        {
+            if (coord1 == coords_joueurs[joueur][0] && coord2 == coords_joueurs[joueur][1])
+            {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+void explo_grenade(int coordcase1, int coordcase2, int carte[TAILLE][TAILLE], FILE* fichier)
+{
+    int deplacements[7][2] = DEPLACEMENTS;
+    int i;
+    if (dans_la_carte(coordcase1, coordcase2))
+    {
+        reduc_case(coordcase1, coordcase2, carte, CASEVAL, fichier);
+    } else
+    {
+        fprintf(fichier, "0,0,0\n");
+    }
+    for (i = 0; i < 8; i += 2)
+    {
+        if (dans_la_carte(coordcase1+deplacements[i][0], coordcase2+deplacements[i][1]))
+        {
+            reduc_case(coordcase1+deplacements[i][0], coordcase2+deplacements[i][1], carte, CASEVAL/2, fichier);
+        } else
+        {
+            fprintf(fichier, "0,0,0\n");
+        }
+    }
+}
+
+
+int test_marteau(int coords_joueur[2], int direction, int carte[TAILLE][TAILLE])
+{
+    int deplacements[7][2] = DEPLACEMENTS;
+    if (dans_la_carte(coords_joueur[0] + deplacements[direction][0], coords_joueur[1] + deplacements[direction][1]))
+    {
+        if (carte[coords_joueur[0] + deplacements[direction][0]][coords_joueur[1] + deplacements[direction][1]])
+        {
+            return 2;
+        }
+        return 1;
+    }
+    return 0;
+}
+
+
+void marteau(int coord_joueur[2], int carte[TAILLE][TAILLE], int direction, FILE* fichier)
+{
+    int deplacements[7][2] = DEPLACEMENTS;
+    if (dans_la_carte(coord_joueur[0] + deplacements[direction][0], coord_joueur[1] + deplacements[direction][1]))
+    {
+        reduc_case(coord_joueur[0] + deplacements[direction][0], coord_joueur[1] + deplacements[direction][1], carte, CASEVAL, fichier);
+    } else
+    {
+        fprintf(fichier, "0,0,0\n");
+    }
+}
+
+
+int dans_la_carte(int coord1, int coord2)
+{
+    return (coord1 >= 0 && coord1 < TAILLE && coord2 >= 0 && coord2 < TAILLE);
+}
+
+int ia(int joueur, int copie[TAILLE][TAILLE + NBJOUEURS], int nb_lignes, int nb_collones)
+{
+    int ret;
+    switch(joueur)
+    {
+    case 0:
+        return rand() % 96;
+        ret = 0;
+        scanf("%d", &ret);
+        return ret;
+    case 1:
+        return rand() % 96;
+        ret = 0;
+        scanf("%d", &ret);
+        return ret;/*
+    case 2:
+        return ia2(copie, nb_lignes, nb_collones);
+    case 3:
+        return ia3(copie, nb_lignes, nb_collones);
+    case 4:
+        return ia4(copie, nb_lignes, nb_collones);
+    case 5:
+        return ia5(copie, nb_lignes, nb_collones);
+    case 6:
+        return ia6(copie, nb_lignes, nb_collones);
+    case 7:
+        return ia7(copie, nb_lignes, nb_collones);
+    }*/
+    }
+    return 42;
+}
+
+
+
+void Color(int t,int f)
+{
+    HANDLE H=GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(H,f*16+t);
+}
+
