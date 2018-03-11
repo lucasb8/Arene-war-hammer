@@ -102,3 +102,5 @@ et pour choix2 :
 -5, casser la case en bas à gauche;
 -6, casser la case en bas;
 -7, casser la case en bas à droite.
+
+L'entier retourné est donc compris entre 0 et 95.
