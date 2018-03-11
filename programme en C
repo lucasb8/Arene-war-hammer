@@ -14,7 +14,7 @@
 
 
 void pvp();
-void ecrire_etat_initial(FILE* fichier,int coords_joueurs[NBJOUEURS][2], int carte[TAILLE][TAILLE]);
+void ecrire_etat_initial(FILE* fichier, int coords_joueurs[NBJOUEURS][2], int carte[TAILLE][TAILLE]);
 void remplir_carte_init(int carte[TAILLE][TAILLE]);
 void positionner_joueurs(int coords_joueurs[NBJOUEURS][2]);
 void raffraichir_copie(int copie[TAILLE][TAILLE + NBJOUEURS], int carte[TAILLE][TAILLE], int coords_joueurs[NBJOUEURS][2], int joueurs_vivants[NBJOUEURS], int joueur);
