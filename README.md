@@ -37,6 +37,7 @@ Il est interdit de se déplacer vers une case occupée par un autre joueur ou ve
 
 Un lancé de grenade s’effectue de la manière suivante : la grenade avance dans la direction choisie et s'arrête à 5 case du lanceur si il n’y a aucun joueur ni sur l’une des 4 case survolées ni sur la case atteinte par la grenade. Sinon la grenade s’arrête juste avant le premier joueur qu’elle rencontre (il est donc impossible de lancer une grenade sur une case occupée par un autre joueur mais il est possible que la grenade explose sur le lanceur). Si la grenade est lancée hors de la map elle s’arrête à la bordure. Une fois arrêtée la grenade explose même si elle est située au dessus d’une case détruite ou sur le lanceur et détruit la case sur laquelle elle se situe et réduit de la moitié du nombre de points de vie initial les 4 case adjacentes.
 Si le lanceur détruit la case sur laquelle il se situe, il meurt. Si il a aussi détruit la case sous un autre joueur, ce joueur mourra mais après le lanceur.
+
 A la fin de la première action, la case sur laquelle était situé le joueur au début de son tour perd 1 point de vie. Si le joueur a lancé un grenade (il n’a donc pas bougé donc la case perdant 1 PV est la case sur laquelle il se situe toujours) et que les PV de la case sur laquelle il se trouve tombent à 0, le joueur meurt. Si il a cassé la case situé sous un autre joueur grâce à sa grenade, le lanceur mourra avant l’autre joueur.
 
 deuxième action :
