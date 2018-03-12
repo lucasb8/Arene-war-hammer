@@ -69,17 +69,17 @@ Sur les NBJOUEURS colonnes restantes sont donnés les états des joueurs (0 pour
 exemple (avec 2 joueurs) :
 map =
 
-0 0 4 4 0 0 1 1
+0  0  4  4  0  0  1  1
 
-0 4 4 4 4 0 2 3
+0  4  4  4  4  0  2  3
 
-4 4 4 4 4 4 1 4
+4  4  4  4  4  4  1  4
 
-4 4 4 4 4 4 0 0
+4  4  4  4  4  4  0  0
 
-0 4 4 4 4 0 0 0
+0  4  4  4  4  0  0  0
 
-0 0 4 4 0 0 0 0
+0  0  4  4  0  0  0  0
 
 hauteur = 6
 
@@ -90,48 +90,48 @@ Les ia retournent un entier : 8 * choix1 + choix2
 
 Avec pour choix1:
 
--0, lancer une grenade à droite;
+         -0, lancer une grenade à droite;
 
--1, lancer une grenade en haut;
+         -1, lancer une grenade en haut;
 
--2, lancer une grenade à gauche;
+         -2, lancer une grenade à gauche;
 
--3, lancer une grenade en bas;
+         -3, lancer une grenade en bas;
 
--4, aller à droite;
+         -4, aller à droite;
 
--5, aller en haut à droite;
+         -5, aller en haut à droite;
 
--6, aller en haut;
+         -6, aller en haut;
 
--7, aller en haut à gauche;
+         -7, aller en haut à gauche;
 
--8, aller à gauche;
+         -8, aller à gauche;
 
--9, aller en bas à gauche;
+         -9, aller en bas à gauche;
 
--10, aller en bas;
+         -10, aller en bas;
 
--11, aller en bas à droite.
+         -11, aller en bas à droite.
 
 
 et pour choix2 :
 
--0, casser la case à droite;
+         -0, casser la case à droite;
 
--1, casser la case en haut à droite;
+         -1, casser la case en haut à droite;
 
--2, casser la case en haut;
+         -2, casser la case en haut;
 
--3, casser la case en haut à gauche;
+         -3, casser la case en haut à gauche;
 
--4, casser la case à gauche;
+         -4, casser la case à gauche;
 
--5, casser la case en bas à gauche;
+         -5, casser la case en bas à gauche;
 
--6, casser la case en bas;
+         -6, casser la case en bas;
 
--7, casser la case en bas à droite.
+         -7, casser la case en bas à droite.
 
 
 L'entier retourné est donc compris entre 0 et 95.
