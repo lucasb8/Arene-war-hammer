@@ -69,17 +69,17 @@ Sur les NBJOUEURS colonnes restantes sont donnés les états des joueurs (0 pour
 exemple (avec 2 joueurs) :
 map =
 
-0  0  4  4  0  0  1  1
+         0   0   4   4   0   0   1   1
 
-0  4  4  4  4  0  2  3
+         0   4   4   4   4   0   2   3
 
-4  4  4  4  4  4  1  4
+         4   4   4   4   4   4   1   4
 
-4  4  4  4  4  4  0  0
+         4   4   4   4   4   4   0   0
 
-0  4  4  4  4  0  0  0
+         0   4   4   4   4   0   0   0
 
-0  0  4  4  0  0  0  0
+         0   0   4   4   0   0   0   0
 
 hauteur = 6
 
