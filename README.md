@@ -13,64 +13,73 @@ Règles du jeux :
 
 principe du jeux :
 
-War hammer est un jeux de survie. Le classement est donc simple : plus la survie est longue, plus ton classement sera élevé. Le gagnant est donc le dernier survivant.
+         War hammer est un jeux de survie. Le classement est donc simple : plus la survie est longue, plus ton 
+         classement sera élevé. Le gagnant est donc le dernier survivant.
 
-Initialement les joueurs se trouvent sur une plateforme composées de cases carrée ayant toutes le même nombre de points de vie. La plateforme vole au dessus du vide. Au cours de la partie les joueur effectueront des action qui enlèveront des points de vie aux cases.
+         Initialement les joueurs se trouvent sur une plateforme composées de cases carrée ayant toutes le même 
+         nombre de points de vie. La plateforme vole au dessus du vide. Au cours de la partie les joueur 
+         effectueront des action qui enlèveront des points de vie aux cases.
 
-Lorsque les PV d’une case tombent à 0, cette case est détruite créant un trou dans la plateforme.
-Peut importe le moment de la partie, il est impossible de régénérer les cases. 
+         Lorsque les PV d’une case tombent à 0, cette case est détruite créant un trou dans la plateforme.
+         Peut importe le moment de la partie, il est impossible de régénérer les cases. 
 
-Les différents joueurs vont jouer chacuns leurs tours. L'ordre des joueurs est choisi aléatoirement au début de la partie puis reste le même jusqu'à la fin.
-A chaque fois qu'un joueur aura terminé ses actions durant un tour, tous les joueurs situés sur un case ayant disparu meurent.
+         Les différents joueurs vont jouer chacuns leurs tours. L'ordre des joueurs est choisi aléatoirement au 
+         début de la partie puis reste le même jusqu'à la fin.
+         A chaque fois qu'un joueur aura terminé ses actions durant un tour, tous les joueurs situés sur un case 
+         ayant disparu meurent.
 
 mort d’un joueur :
 
-Un joueur meurt si la case sur laquelle il est situé est détruite.
-Les deux seules façons de mourir dans le jeux sont d’effectuer une actions invalide ou de se trouver sur une case détruite.
+         Un joueur meurt si la case sur laquelle il est situé est détruite.
+         Les deux seules façons de mourir dans le jeux sont d’effectuer une actions invalide ou de se trouver 
+         sur une case détruite.
 
 tour d’un joueur :
 
-Lors de son tour, le joueur doit choisir obligatoirement deux action.
+         Lors de son tour, le joueur doit choisir obligatoirement deux action.
 
 première action :
 
-         Pour la première, il a le choix entre se déplacer vers l’une des 8 case qui lui sont adjacentes ou lancer une grenade vers 
-         l’un des 4 points cardinaux.
-         Il est interdit de se déplacer vers une case occupée par un autre joueur ou vers une case hors de la carte sous peine de mort 
-         (dans le jeux). Si un joueur se déplace vers une case détruite, il meurt.
+         Pour la première, il a le choix entre se déplacer vers l’une des 8 case qui lui sont adjacentes 
+         ou lancer une grenade vers l’un des 4 points cardinaux.
+         Il est interdit de se déplacer vers une case occupée par un autre joueur ou vers une case hors 
+         de la carte sous peine de mort (dans le jeux). Si un joueur se déplace vers une case détruite, 
+         il meurt.
 
-         Un lancé de grenade s’effectue de la manière suivante : la grenade avance dans la direction choisie et s'arrête à 5 case du 
-         lanceur si il n’y a aucun joueur ni sur l’une des 4 case survolées ni sur la case atteinte par la grenade. Sinon la grenade 
-         s’arrête juste avant le premier joueur qu’elle rencontre (il est donc impossible de lancer une grenade sur une case occupée
-         par un autre joueur mais il est possible que la grenade explose sur le lanceur). Si la grenade est lancée hors de la map 
-         elle s’arrête à la bordure. Une fois arrêtée la grenade explose même si elle est située au dessus d’une case détruite ou sur
-         le lanceur et détruit la case sur laquelle elle se situe et réduit de la moitié du nombre de points de vie initial les 4 case
-         adjacentes.
-         Si le lanceur détruit la case sur laquelle il se situe, il meurt. Si il a aussi détruit la case sous un autre joueur, ce 
-         joueur mourra mais après le lanceur.
+         Un lancé de grenade s’effectue de la manière suivante : la grenade avance dans la direction 
+         choisie et s'arrête à 5 case du lanceur si il n’y a aucun joueur ni sur l’une des 4 case 
+         survolées ni sur la case atteinte par la grenade. Sinon la grenade s’arrête juste avant le 
+         premier joueur qu’elle rencontre (il est donc impossible de lancer une grenade sur une case 
+         occupée par un autre joueur mais il est possible que la grenade explose sur le lanceur). 
+         Si la grenade est lancée hors de la map elle s’arrête à la bordure. Une fois arrêtée la 
+         grenade explose même si elle est située au dessus d’une case détruite ou sur le lanceur et 
+         détruit la case sur laquelle elle se situe et réduit de la moitié du nombre de points de 
+         vie initial les 4 case adjacentes.
+         Si le lanceur détruit la case sur laquelle il se situe, il meurt. Si il a aussi détruit la 
+         case sous un autre joueur, ce joueur mourra mais après le lanceur.
 
           A la fin de la première action, la case sur laquelle était situé le joueur au début de son tour perd 1 point de vie. Si le
           joueur a lancé un grenade (il n’a donc pas bougé donc la case perdant 1 PV est la case sur laquelle il se situe toujours) 
-          et que les PV de la case sur laquelle il se trouve tombent à 0, le joueur meurt. Si il a cassé la case situé sous un autre               joueur grâce à sa grenade, le lanceur mourra avant l’autre joueur.
+          et que les PV de la case sur laquelle il se trouve tombent à 0, le joueur meurt. Si il a cassé la case situé sous un autre              joueur grâce à sa grenade, le lanceur mourra avant l’autre joueur.
 
 deuxième action :
 
-         Si le joueur n’est pas mort de sa première action il effectue sa deuxième.
-         Les joueurs sont équipés d’un gros marteau qui les démangent, ils sont obligés de donner un et un seul coup à chaque
-         tour, c’est la deuxième action. Ils peuvent atteindre les 8 case autours d’eux. Un coup de marteau casse entièrement
-         une case.
-         Si un joueur donne un coup sur une case située hors de la map il meurt.
-         Si un joueur donne un coup sur une case détruite, il se fait entraîner par le poids de son marteau et tombe dans le
-         trou (il meurt donc).
+Si le joueur n’est pas mort de sa première action il effectue sa deuxième.
+Les joueurs sont équipés d’un gros marteau qui les démangent, ils sont obligés de donner un et un seul coup à chaque
+tour, c’est la deuxième action. Ils peuvent atteindre les 8 case autours d’eux. Un coup de marteau casse entièrement
+une case.
+Si un joueur donne un coup sur une case située hors de la map il meurt.
+Si un joueur donne un coup sur une case détruite, il se fait entraîner par le poids de son marteau et tombe dans le
+trou (il meurt donc).
 
 fin du tour :
 
-         quelle que soit la décision du joueur il enlèvera des PV à une case, ce qui implique que la partie prendra fin dans tous les 
-         cas.
+quelle que soit la décision du joueur il enlèvera des PV à une case, ce qui implique que la partie prendra fin dans tous les 
+cas.
 
-         Le tour du joueur est enfin fini, c’est seulement maintenant que les joueurs situés sur des cases détruite par le joueur 
-         venant de jouer meurent. On ne peut donc pas gagner d’une action suicide. Si plusieurs joueurs meurent lors du même tour,
-         l’ordre des mort est l’ordre  dans lequel les joueurs ont étés inscrits dans le programme.
+Le tour du joueur est enfin fini, c’est seulement maintenant que les joueurs situés sur des cases détruite par le joueur 
+venant de jouer meurent. On ne peut donc pas gagner d’une action suicide. Si plusieurs joueurs meurent lors du même tour,
+l’ordre des mort est l’ordre  dans lequel les joueurs ont étés inscrits dans le programme.
 
 
 ce que font les ia :
