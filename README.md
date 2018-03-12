@@ -58,39 +58,42 @@ première action :
          Si le lanceur détruit la case sur laquelle il se situe, il meurt. Si il a aussi détruit la 
          case sous un autre joueur, ce joueur mourra mais après le lanceur.
 
-          A la fin de la première action, la case sur laquelle était situé le joueur au début de son tour perd 1 point de vie. Si le
-          joueur a lancé un grenade (il n’a donc pas bougé donc la case perdant 1 PV est la case sur laquelle il se situe toujours) 
-          et que les PV de la case sur laquelle il se trouve tombent à 0, le joueur meurt. Si il a cassé la case situé sous un autre              joueur grâce à sa grenade, le lanceur mourra avant l’autre joueur.
+          A la fin de la première action, la case sur laquelle était situé le joueur au début de son 
+          tour perd 1 point de vie. Si le joueur a lancé un grenade (il n’a donc pas bougé donc la 
+          case perdant 1 PV est la case sur laquelle il se situe toujours) et que les PV de la case 
+          sur laquelle il se trouve tombent à 0, le joueur meurt. Si il a cassé la case situé sous 
+          un autre joueur grâce à sa grenade, le lanceur mourra avant l’autre joueur.
 
 deuxième action :
 
-Si le joueur n’est pas mort de sa première action il effectue sa deuxième.
-Les joueurs sont équipés d’un gros marteau qui les démangent, ils sont obligés de donner un et un seul coup à chaque
-tour, c’est la deuxième action. Ils peuvent atteindre les 8 case autours d’eux. Un coup de marteau casse entièrement
-une case.
-Si un joueur donne un coup sur une case située hors de la map il meurt.
-Si un joueur donne un coup sur une case détruite, il se fait entraîner par le poids de son marteau et tombe dans le
-trou (il meurt donc).
+         Si le joueur n’est pas mort de sa première action il effectue sa deuxième.
+         Les joueurs sont équipés d’un gros marteau qui les démangent, ils sont obligés de donner un 
+         et un seul coup à chaque tour, c’est la deuxième action. Ils peuvent atteindre les 8 case 
+         autours d’eux. Un coup de marteau casse entièrement une case.
+         Si un joueur donne un coup sur une case située hors de la map il meurt.
+         Si un joueur donne un coup sur une case détruite, il se fait entraîner par le poids de son 
+         marteau et tombe dans le trou (il meurt donc).
 
 fin du tour :
 
-quelle que soit la décision du joueur il enlèvera des PV à une case, ce qui implique que la partie prendra fin dans tous les 
-cas.
+         quelle que soit la décision du joueur il enlèvera des PV à une case, ce qui implique que la 
+         partie prendra fin dans tous les cas.
 
-Le tour du joueur est enfin fini, c’est seulement maintenant que les joueurs situés sur des cases détruite par le joueur 
-venant de jouer meurent. On ne peut donc pas gagner d’une action suicide. Si plusieurs joueurs meurent lors du même tour,
-l’ordre des mort est l’ordre  dans lequel les joueurs ont étés inscrits dans le programme.
+         Le tour du joueur est enfin fini, c’est seulement maintenant que les joueurs situés sur des 
+         cases détruite par le joueur venant de jouer meurent. On ne peut donc pas gagner d’une action 
+         suicide. Si plusieurs joueurs meurent lors du même tour, l’ordre des mort est l’ordre  dans 
+         lequel les joueurs ont étés inscrits dans le programme.
 
 
 ce que font les ia :
 
-Les ia sont des fonctions dont prototype est le suivant :
-int my_ai_play(int **map, int height, int width)
+         Les ia sont des fonctions dont prototype est le suivant :
+         int my_ai_play(int **map, int height, int width)
 
 Pour nous :
-int mon_ia(int map[TAILLE][TAILLE+NBJOUEURS], int hauteur, int largeur)
-avec hauteur = TAILLE
-         largeur = TAILLE + NBJOUEURS
+         int mon_ia(int map[TAILLE][TAILLE+NBJOUEURS], int hauteur, int largeur)
+         avec - hauteur = TAILLE
+              - largeur = TAILLE + NBJOUEURS
 
 Le tableau donné en paramètre contient la map (elle est carrée) sur les TAILLE premières colonnes. Chaque case de la map est représentée par un entier qui correspond à la durée de vie restante à cette case, si elle est représentée par un 0, c’est que la case est détruite.
 
